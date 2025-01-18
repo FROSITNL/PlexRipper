@@ -121,7 +121,7 @@ install_linux_dependencies() {
     if [[ "$ARCH" == "x86_64" || "$ARCH" == "i686" ]]; then
         if ! dpkg -l | grep -q gcc-multilib; then
             echo "Installing gcc-multilib and g++-multilib..."
-            sudo apt update && sudo apt install -y gcc-multilib g++-multilib
+            sudo apt update && sudo apt install -y gcc-multilib g++-multilib zip
             echo "Multilib packages installed."
         else
             echo "Multilib packages already installed."
@@ -227,8 +227,9 @@ function build() {
         fi
 
         echo "Packaging $TARGET_BUILD_DIR..."
-        cd "$OUTPUT_DIR" || exit
+        cd "$BUILD_DIR" || exit
         zip -r "$APP_NAME-$VERSION-$TARGET.zip" "$APP_NAME-$VERSION-$TARGET"
+        mv "$APP_NAME-$VERSION-$TARGET.zip" $OUTPUT_DIR
         cd - || exit
 
         echo "Packaged: $APP_NAME-$VERSION-$TARGET.zip"
