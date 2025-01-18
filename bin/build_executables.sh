@@ -188,7 +188,7 @@ function build() {
         mkdir -p $BUILD_DIR
     else
         echo -e "Directory $BUILD_DIR already exists.!!"
-        exit 1
+        # exit 1
     fi
 
     mkdir -p $OUTPUT_DIR
