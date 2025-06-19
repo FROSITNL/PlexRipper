@@ -33,6 +33,7 @@ public static partial class Startup
     {
 
         var corsOrigins = EnvironmentExtensions.GetCorsOrigins();
+        var isCorsAllowAny = EnvironmentExtensions.IsCorsAllowAny();
 
         // This has to always be first
         services.AddCors(options =>
@@ -41,7 +42,16 @@ public static partial class Startup
                 CORSConfiguration,
                 builder =>
                 {
-                    if (corsOrigins != null && corsOrigins.Length > 0)
+                    if (isCorsAllowAny)
+                    {
+                        builder
+                            .AllowAnyOrigin()
+                            .AllowAnyHeader()
+                            .AllowAnyMethod()
+                            .AllowCredentials()
+                            .WithExposedHeaders("X-PlexRipper-Version");
+                        
+                    } else if (corsOrigins != null && corsOrigins.Length > 0)
                     {
                         builder
                             .WithOrigins(corsOrigins)

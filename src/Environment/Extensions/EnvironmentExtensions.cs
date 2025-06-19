@@ -19,6 +19,10 @@ public static class EnvironmentExtensions
     public const string DevelopmentRootPathKey = "DEVELOPMENT_ROOT_PATH";
     
     public const string CorsOriginsKey = "CORS_ORIGINS";
+    
+    public const string CorsAllowAnyOrigin = "CORS_ALLOW_ANY_ORIGIN";
+    
+    public const string IngressEntryKey = "INGRESS_ENTRY";
 
     private static readonly string TrueValue = Convert.ToString(true);
 
@@ -103,11 +107,14 @@ public static class EnvironmentExtensions
     /// </summary>
     public static string[]? GetCorsOrigins()
     {
-        var corsOriginsEnv = System.Environment.GetEnvironmentVariable("CORS_ORIGINS");
-        if (string.IsNullOrWhiteSpace(corsOriginsEnv))
-            return null;
-        return corsOriginsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        var corsOriginsEnv = System.Environment.GetEnvironmentVariable(CorsOriginsKey);
+        return string.IsNullOrWhiteSpace(corsOriginsEnv) ? null : corsOriginsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
+    
+    /// <summary>
+    /// Checks if the CORS policy should allow any origin by checking the environment variable "CORS_ALLOW_ANY_ORIGIN".
+    /// </summary>
+    public static bool IsCorsAllowAny() => IsTrue(System.Environment.GetEnvironmentVariable(CorsAllowAnyOrigin));
     
     /// <summary>
     /// Gets the ingress entry point from the environment variable "INGRESS_ENTRY".
