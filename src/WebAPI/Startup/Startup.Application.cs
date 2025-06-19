@@ -51,7 +51,7 @@ public static partial class Startup
         {
             app.UsePathBase(EnvironmentExtensions.GetIngressEntry());
         }
-        
+
         app.UseAuthentication();
         app.UseAuthorization();
 
