@@ -19,11 +19,13 @@ export default defineNuxtPlugin((nuxtApp) => {
 			baseUrl = `${currentLocation.protocol}//${currentLocation.hostname}:${currentLocation.port}`;
 		}
 
+		const ingressEntry = publicEnv.ingressEntry || baseUrl;
+
 		const appConfig: IAppConfig = {
 			nodeEnv: publicEnv.nodeEnv,
 			isProduction: publicEnv.nodeEnv === 'production',
 			isDocker: publicEnv.isDocker,
-			baseUrl,
+			baseUrl: ingressEntry,
 		};
 		setupAxios(appConfig, nuxtApp.$router as Router);
 		useLocalizationStore().setI18nObject(nuxtApp.$i18n as I18nObjectType);
