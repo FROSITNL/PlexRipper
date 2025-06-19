@@ -46,6 +46,12 @@ public static partial class Startup
             });
         }
 
+        // Setup ingress entry if available
+        if (EnvironmentExtensions.GetIngressEntry() != null)
+        {
+            app.UsePathBase(EnvironmentExtensions.GetIngressEntry());
+        }
+        
         app.UseAuthentication();
         app.UseAuthorization();
 

@@ -109,5 +109,13 @@ public static class EnvironmentExtensions
         return corsOriginsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
     
+    /// <summary>
+    /// Gets the ingress entry point from the environment variable "INGRESS_ENTRY".
+    /// </summary>
+    public static string? GetIngressEntry()
+    {
+        return System.Environment.GetEnvironmentVariable(IngressEntryKey) ?? null;
+    }
+    
     
 }
