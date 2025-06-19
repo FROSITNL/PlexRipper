@@ -32,7 +32,11 @@ public class Program
                 OsInfo.CurrentOS
             );
 
-            AppExtensions.LogIdentity();
+            if (!OsInfo.IsWindows)
+            {
+                // @TODO breaks onwindows
+                AppExtensions.LogIdentity();
+            }
 
             _log.InformationLine("Initiating boot process");
 
