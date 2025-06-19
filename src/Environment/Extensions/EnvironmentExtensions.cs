@@ -108,7 +108,9 @@ public static class EnvironmentExtensions
     public static string[]? GetCorsOrigins()
     {
         var corsOriginsEnv = System.Environment.GetEnvironmentVariable(CorsOriginsKey);
-        return string.IsNullOrWhiteSpace(corsOriginsEnv) ? null : corsOriginsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+        return string.IsNullOrWhiteSpace(corsOriginsEnv)
+            ? null
+            : corsOriginsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
     }
     
     /// <summary>

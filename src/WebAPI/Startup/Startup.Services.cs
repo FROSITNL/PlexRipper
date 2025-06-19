@@ -31,7 +31,6 @@ public static partial class Startup
     /// <param name="env"> The <see cref="IWebHostEnvironment"/> instance to configure.</param>
     public static void ConfigureServices(this IServiceCollection services, IWebHostEnvironment env)
     {
-
         var corsOrigins = EnvironmentExtensions.GetCorsOrigins();
         var isCorsAllowAny = EnvironmentExtensions.IsCorsAllowAny();
 
@@ -45,13 +44,14 @@ public static partial class Startup
                     if (isCorsAllowAny)
                     {
                         builder
-                            .AllowAnyOrigin()
+                            .SetIsOriginAllowed(origin =>
+                                new Uri(origin).Host != "nonexistenturl") // Dummy check to allow any origin
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials()
                             .WithExposedHeaders("X-PlexRipper-Version");
-                        
-                    } else if (corsOrigins != null && corsOrigins.Length > 0)
+                    }
+                    else if (corsOrigins != null && corsOrigins.Length > 0)
                     {
                         builder
                             .WithOrigins(corsOrigins)
