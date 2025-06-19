@@ -45,13 +45,13 @@ public static partial class Startup
                     if (isCorsAllowAny)
                     {
                         builder
-                            .AllowAnyOrigin()
+                            .SetIsOriginAllowed(origin => new Uri(origin).Host != "nonexistenturl") // Dummy check to allow any origin
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials()
                             .WithExposedHeaders("X-PlexRipper-Version");
-                        
-                    } else if (corsOrigins != null && corsOrigins.Length > 0)
+                    }
+                    else if (corsOrigins != null && corsOrigins.Length > 0)
                     {
                         builder
                             .WithOrigins(corsOrigins)
