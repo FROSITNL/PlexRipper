@@ -17,6 +17,8 @@ public static class EnvironmentExtensions
     public const string InformationalVersionKey = "INFORMATIONAL_VERSION";
 
     public const string DevelopmentRootPathKey = "DEVELOPMENT_ROOT_PATH";
+    
+    public const string CorsOriginsKey = "CORS_ORIGINS";
 
     private static readonly string TrueValue = Convert.ToString(true);
 
@@ -95,4 +97,17 @@ public static class EnvironmentExtensions
     {
         System.Environment.SetEnvironmentVariable(LogEnvVarsKey, state.ToString());
     }
+
+    /// <summary>
+    /// Gets the CORS origins from the environment variable "CORS_ORIGINS" as a string array, or returns null if not set.
+    /// </summary>
+    public static string[]? GetCorsOrigins()
+    {
+        var corsOriginsEnv = System.Environment.GetEnvironmentVariable("CORS_ORIGINS");
+        if (string.IsNullOrWhiteSpace(corsOriginsEnv))
+            return null;
+        return corsOriginsEnv.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+    }
+    
+    
 }
