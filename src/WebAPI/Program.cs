@@ -22,6 +22,20 @@ public class Program
         {
             _log.InformationLine("Starting PlexRipper!");
 
+            // override log-level if specified
+            // if (EnvironmentExtensions.HasArg("log-level", args) == true)
+            // {
+            //     System.Environment.SetEnvironmentVariable(
+            //         EnvironmentExtensions.LogLevelKey,
+            //         EnvironmentExtensions.GetArg("log-level", args)
+            //     );
+            // }
+
+            if (EnvironmentExtensions.OverwriteEnvsWithArgs(args) == true)
+            {
+                _log.InformationLine("Overwriting environment variables with command-line arguments");
+            }
+
             LogManager.SetupLogging(EnvironmentExtensions.GetLogLevel());
             FluentResultConfiguration.Setup();
 
@@ -40,6 +54,7 @@ public class Program
 
             _log.InformationLine("Initiating boot process");
 
+            // Create the builder for the web application
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Host.ConfigureAutofacBuilder();
@@ -49,6 +64,7 @@ public class Program
             var app = builder.Build();
 
             var configResult = app.SetupConfigFile();
+
             if (configResult.IsFailed)
             {
                 FailedToStart(configResult);

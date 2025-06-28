@@ -33,6 +33,7 @@ public static partial class Startup
     {
         var corsOrigins = EnvironmentExtensions.GetCorsOrigins();
         var isCorsAllowAny = EnvironmentExtensions.IsCorsAllowAny();
+        var customSpaRoot = EnvironmentExtensions.GetCustomSpaRoot();
 
         // This has to always be first
         services.AddCors(options =>
@@ -44,8 +45,7 @@ public static partial class Startup
                     if (isCorsAllowAny)
                     {
                         builder
-                            .SetIsOriginAllowed(origin =>
-                                new Uri(origin).Host != "nonexistenturl") // Dummy check to allow any origin
+                            .SetIsOriginAllowed(origin => new Uri(origin).Host != "nonexistenturl") // Dummy check to allow any origin
                             .AllowAnyHeader()
                             .AllowAnyMethod()
                             .AllowCredentials()
@@ -94,20 +94,22 @@ public static partial class Startup
 
         if (!EnvironmentExtensions.IsIntegrationTestMode())
         {
-            // Used to deploy the front-end Nuxt client
-            if (env.IsProduction())
-            {
-                var path = Path.Combine(
-                    Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "",
-                    "wwwroot"
-                );
-                _log.Debug("Setting up SPA static files for production at {Path}", path);
-                services.AddSpaStaticFiles(configuration => configuration.RootPath = path);
-            }
-
+            var spaRootPath = Path.Combine(
+                Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "",
+                "wwwroot"
+            );
+            
             if (env.IsDevelopment())
-                services.AddSpaStaticFiles(configuration => configuration.RootPath = "ClientApp");
+                spaRootPath = "ClientApp";
 
+            if (customSpaRoot != null)
+            {
+                spaRootPath = customSpaRoot;
+            }
+            
+            _log.Debug("Setting up SPA static files for production at {Path}", spaRootPath);
+            services.AddSpaStaticFiles(configuration => configuration.RootPath = spaRootPath);
+            
             // Setup SignalR
             services
                 .AddSignalR()
@@ -210,6 +212,7 @@ public static partial class Startup
             c =>
             {
                 c.Cookie.Name = DefaultUserAppCredentials.DefaultCookieName;
+                
                 c.LoginPath = ApiRoutes.LoginEndpoint;
                 c.LogoutPath = ApiRoutes.LogOutEndpoint;
                 c.SlidingExpiration = true;

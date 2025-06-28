@@ -19,10 +19,83 @@ public static class EnvironmentExtensions
     public const string DevelopmentRootPathKey = "DEVELOPMENT_ROOT_PATH";
 
     public const string CorsOriginsKey = "CORS_ORIGINS";
+    
+    public const string SpaRootPath = "SPA_ROOT_PATH";
 
     public const string CorsAllowAnyOrigin = "CORS_ALLOW_ANY_ORIGIN";
 
     public const string IngressEntryKey = "INGRESS_ENTRY";
+
+    /// <summary>
+    /// Parses command-line arguments into a dictionary.
+    /// </summary>
+    private static Dictionary<string, string> ParseArguments(string[] args)
+    {
+        var result = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+
+        foreach (var arg in args)
+        {
+            if (arg.StartsWith("--"))
+            {
+                var parts = arg.Substring(2).Split('=', 2);
+                if (parts.Length == 2)
+                {
+                    result[parts[0]] = parts[1];
+                }
+            }
+        }
+
+        return result;
+    }
+
+    /// <summary>
+    /// Overwrite environment variables with command-line arguments if they are set.
+    /// </summary>
+    /// <param name="args"></param>
+    /// <returns></returns>
+    public static bool? OverwriteEnvsWithArgs(string[] args)
+    {
+        var arguments = ParseArguments(args);
+        foreach (var argKey in arguments)
+        {
+            var envKey = argKey.Key.Replace("-", "_").ToUpper();
+            var envValue = argKey.Value;
+            if (!string.IsNullOrWhiteSpace(envValue))
+            {
+                System.Environment.SetEnvironmentVariable(envKey, envValue);
+            }
+            else
+            {
+                // If the value is empty, remove the environment variable
+                System.Environment.SetEnvironmentVariable(envKey, null);
+            }
+        }
+        return arguments.Count > 0 ? true : false;
+    }
+
+    /// <summary>
+    /// Checks if the specified key exists in the command-line arguments.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="args"></param>
+    /// <returns>bool</returns>
+    public static bool? HasArg(string key, string[] args)
+    {
+        var arguments = ParseArguments(args);
+        return arguments.ContainsKey(key);
+    }
+
+    /// <summary>
+    /// Get the value of the specified key from the command-line arguments.
+    /// </summary>
+    /// <param name="key"></param>
+    /// <param name="args"></param>
+    /// <returns></returns>
+    public static string? GetArg(string key, string[] args)
+    {
+        var arguments = ParseArguments(args);
+        return arguments.TryGetValue(key, out var value) ? value : null;
+    }
 
     private static readonly string TrueValue = Convert.ToString(true);
 
@@ -95,7 +168,7 @@ public static class EnvironmentExtensions
     }
 
     /// <summary>
-    /// When set to true, the application will not mask/censor sensitive data in the logs.
+    /// When set to true, the application will log all environment variables set on startup.
     /// </summary>
     public static void EnableLogEnvVars(bool state)
     {
@@ -124,5 +197,20 @@ public static class EnvironmentExtensions
     public static string? GetIngressEntry()
     {
         return System.Environment.GetEnvironmentVariable(IngressEntryKey) ?? null;
+    }
+    
+    public static string? GetCustomSpaRoot()
+    {
+        return System.Environment.GetEnvironmentVariable(SpaRootPath) ?? null;
+    }
+
+    public static string[]? GetCommandLineArgs()
+    {
+        var args = System.Environment.GetCommandLineArgs();
+        // parse args
+
+        return args.Length > 1
+            ? args[1..] // Skip the first argument which is the executable path
+            : null;
     }
 }
