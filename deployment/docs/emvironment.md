@@ -23,10 +23,8 @@ There are a few areas of Env vars specific to our frameworks (asp.net/vue)
 
 These should be documented at the docs of the corresponding framework.
 
-
-
 * DEVELOPMENT_ROOT_PATH
-* VERSION: semantic version
+* VERSION:
 * PUID=1000
 * PGID=1000
 * LOG_LEVEL
@@ -35,3 +33,16 @@ These should be documented at the docs of the corresponding framework.
     * 5=information
 * LOG_ENV_VARS=false
 * UNMASKED
+
+* CORS_ORIGINS
+* CORS_ALLOW_ANY
+* SPA_ROOT
+
+These can be set as environment variables, they are also stored in a json file inside the config directory.
+
+### Overriding using arguments
+
+By specifying runtime argument (`--spa-root="ClientApp", --environment=development), the environment variables are overwritten.
+This is because `EnvironmentExtensions` static class is being used a lot.
+
+We should refactor all those references to using the ConfigurationManager which has built in parameter fallback.
