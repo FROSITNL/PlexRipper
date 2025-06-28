@@ -17,6 +17,7 @@ build/
 bin/
 obj/
 
+
 # Visual Studio 2015 cache/options directory
 .vs/
 
@@ -164,3 +165,7 @@ fabric.properties
 # Plex API SDK Manally added
 /plexcsharp/
 /PlexRipperData
+/tmp*/*
+
+!/deployment/bin/*
+!/bin/*.sh

@@ -10,10 +10,16 @@ export default defineNuxtPlugin((nuxtApp) => {
 	const publicEnv = useRuntimeConfig().public;
 
 	nuxtApp.hook('app:created', () => {
-		Log.level = 4;
-		// Log.level = config.public.isProduction ? LogLevel.Debug : LogLevel.Debug;
+		Log.level = publicEnv.log_level ? 4 : 0;
+		// Log.level = publicEnv.publicEnv.nodeEnv === 'production' ? Log.level.D : LogLevel.Debug;
 
-		let baseUrl = `http://localhost:${publicEnv.apiPort}`;
+		// let baseUrl = `http://localhost:${publicEnv.apiPort}`;
+		let baseUrl = `${publicEnv.baseUrl}:${publicEnv.apiPort}`;
+
+		if(localStorage.getItem('base_url')){
+			let baseUrl = localStorage.getItem('base_url');
+		}
+
 		if (publicEnv.isDocker) {
 			const currentLocation = window.location;
 			baseUrl = `${currentLocation.protocol}//${currentLocation.hostname}:${currentLocation.port}`;

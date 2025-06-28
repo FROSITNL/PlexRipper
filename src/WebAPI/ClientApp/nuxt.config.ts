@@ -56,7 +56,8 @@ export default defineNuxtConfig({
 	runtimeConfig: {
 		// Config within public will be also exposed to the client
 		public: {
-			ingressEntry: process.env.INGRESS_ENTRY || false,
+			baseUrl: process.env.BASE_URL || 'http://localhost',
+			ingressEntry: process.env.INGRESS_ENTRY || '/',
 			nodeEnv: process.env.NODE_ENV || 'development',
 			version: process.env.npm_package_version || '?',
 			apiPort: process.env.API_PORT || '5000',
